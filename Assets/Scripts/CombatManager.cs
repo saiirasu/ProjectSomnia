@@ -7,11 +7,10 @@ public class CombatManager : MonoBehaviour
 {
     public CombatState state;
 
-    // scene refs
     public HealthSystem player;
     public HealthSystem enemy;
+    public CombatUIManager uiManager;
 
-    // data refs
     public CharacterStats playerStats;
     public CharacterStats enemyStats;
 
@@ -19,29 +18,49 @@ public class CombatManager : MonoBehaviour
     {
         state = CombatState.Start;
 
-        // feed data to health systems
         player.Initialize(playerStats);
         enemy.Initialize(enemyStats);
+
+        uiManager.InitializeTarget(player, this);
 
         StartCoroutine(SetupCombat());
     }
 
     IEnumerator SetupCombat()
     {
-        // wait before starting
         yield return new WaitForSeconds(1f);
-
         state = CombatState.PlayerTurn;
-        Debug.Log("player turn");
     }
 
-    public void OnPlayerAttack()
+    // method for standard attack without mana
+    public void OnPlayerBasicAttack()
     {
-        // block spam clicks
         if (state != CombatState.PlayerTurn) return;
 
-        enemy.TakeDamage(5);
-        Debug.Log("player attacked");
+        enemy.TakeDamage(player.stats.baseDamage);
+        Debug.Log("player used basic attack");
+
+        state = CombatState.EnemyTurn;
+        StartCoroutine(EnemyAction());
+    }
+
+    // method for persona skills
+    public void OnPlayerUseAbility(AbilityData ability)
+    {
+        if (state != CombatState.PlayerTurn) return;
+
+        if (ability.mpCost > 0)
+        {
+            bool hasMana = player.TryConsumeMana(ability.mpCost);
+            if (!hasMana)
+            {
+                Debug.Log("not enough mana to cast " + ability.abilityName);
+                return;
+            }
+        }
+
+        enemy.TakeDamage(ability.damageAmount);
+        Debug.Log("player used " + ability.abilityName);
 
         state = CombatState.EnemyTurn;
         StartCoroutine(EnemyAction());
@@ -49,12 +68,8 @@ public class CombatManager : MonoBehaviour
 
     IEnumerator EnemyAction()
     {
-        // fake thinking delay
         yield return new WaitForSeconds(1.5f);
-
         player.TakeDamage(3);
-        Debug.Log("enemy attacked player turn");
-
         state = CombatState.PlayerTurn;
     }
 }

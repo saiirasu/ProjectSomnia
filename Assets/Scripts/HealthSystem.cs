@@ -3,38 +3,51 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-    // События, на которые смогут подписываться UI и аниматор
-    public event Action<int, int> OnHealthChanged; // Передает (Текущее ХП, Максимальное ХП)
+    public event Action<int, int> OnHealthChanged;
+    public event Action<int, int> OnManaChanged;
     public event Action OnDied;
 
-    private int currentHealth;
-    private CharacterStats stats; // Данные, которые мы создали ранее
+    // properties open for UI reading
+    public int currentHealth { get; private set; }
+    public int currentMana { get; private set; }
 
-    // Инициализация здоровья при старте боя
+    public CharacterStats stats { get; private set; }
+
     public void Initialize(CharacterStats baseStats)
     {
         stats = baseStats;
         currentHealth = stats.maxHealth;
+        currentMana = stats.maxMana;
 
-        // Оповещаем систему, что здоровье установилось на максимум
         OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
+        OnManaChanged?.Invoke(currentMana, stats.maxMana);
     }
 
     public void TakeDamage(int damageAmount)
     {
-        if (currentHealth <= 0) return; // Защита от получения урона после смерти
+        if (currentHealth <= 0) return;
 
-        // Учитываем броню (базовая формула, которую легко расширить)
         int finalDamage = Mathf.Max(damageAmount - stats.baseDefense, 0);
-
         currentHealth = Mathf.Max(currentHealth - finalDamage, 0);
 
-        // Оповещаем все остальные скрипты, что ХП изменилось
         OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
 
-        if (currentHealth == 0)
+        if (currentHealth <= 0)
         {
-            OnDied?.Invoke(); // Оповещаем о смерти
+            OnDied?.Invoke();
         }
+    }
+
+    public bool TryConsumeMana(int amount)
+    {
+        if (currentMana >= amount)
+        {
+            currentMana -= amount;
+            OnManaChanged?.Invoke(currentMana, stats.maxMana);
+            return true;
+        }
+
+        Debug.Log("not enough mana");
+        return false;
     }
 }

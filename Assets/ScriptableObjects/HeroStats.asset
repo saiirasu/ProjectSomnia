@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d954d90d944dd4a954e8a0d6f143e4, type: 3}
   m_Name: HeroStats
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
-  characterName: okok
+  characterName: Sai
   personaName: 
   isPlayerTeam: 0
   maxHealth: 15
-  maxMana: 0
+  maxMana: 50
   baseDamage: 2
   baseDefense: 2
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 9b3a32a1c0113404bb7391ba72d99731, type: 2}
+  - {fileID: 11400000, guid: 9b3a32a1c0113404bb7391ba72d99731, type: 2}
