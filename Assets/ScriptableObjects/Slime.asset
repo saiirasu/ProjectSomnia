@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64d954d90d944dd4a954e8a0d6f143e4, type: 3}
-  m_Name: EnemyStats
+  m_Name: Slime
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
-  characterName: sai
+  characterName: Slime
   personaName: 
   isPlayerTeam: 0
-  maxHealth: 30
-  maxMana: 0
-  baseDamage: 1
+  maxHealth: 222
+  maxMana: 22
+  baseDamage: 3
   baseDefense: 1
   abilities:
   - {fileID: 11400000, guid: 9b3a32a1c0113404bb7391ba72d99731, type: 2}
+  _affinities:
+  - _element: 0
+    _affinity: 2

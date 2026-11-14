@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd0f5c3963db6994484237298edc33d1, type: 3}
   m_Name: SlashAbility
   m_EditorClassIdentifier: Assembly-CSharp::AbilityData
-  abilityName: Slash
-  mpCost: 3
-  damageAmount: 5
-  isUnlockedByDefault: 1
+  _abilityName: Slash
+  _description: 
+  _icon: {fileID: 0}
+  _manaCost: 3
+  _power: 22
+  _element: 0
+  _effect: 0
+  _targetType: 0
+  _isUnlockedByDefault: 1

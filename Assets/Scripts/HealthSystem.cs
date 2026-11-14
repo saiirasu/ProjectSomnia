@@ -1,53 +1,73 @@
 using System;
 using UnityEngine;
 
+// only HP and MP, combat rules (elements, down, guard) are in CombatUnit
 public class HealthSystem : MonoBehaviour
 {
     public event Action<int, int> OnHealthChanged;
     public event Action<int, int> OnManaChanged;
-    public event Action OnDied;
+    public event Action OnDeath;
 
-    // properties open for UI reading
-    public int currentHealth { get; private set; }
-    public int currentMana { get; private set; }
+    public int CurrentHealth { get; private set; }
+    public int CurrentMana { get; private set; }
+    public int MaxHealth { get; private set; }
+    public int MaxMana { get; private set; }
 
-    public CharacterStats stats { get; private set; }
+    public bool IsDead => CurrentHealth <= 0;
 
-    public void Initialize(CharacterStats baseStats)
+    public void Initialize(int maxHealth, int maxMana)
     {
-        stats = baseStats;
-        currentHealth = stats.maxHealth;
-        currentMana = stats.maxMana;
-
-        OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
-        OnManaChanged?.Invoke(currentMana, stats.maxMana);
+        Initialize(maxHealth, maxMana, maxHealth, maxMana);
     }
 
-    public void TakeDamage(int damageAmount)
+    // used for heroes, who keep their wounds between fights
+    public void Initialize(int maxHealth, int maxMana, int currentHealth, int currentMana)
     {
-        if (currentHealth <= 0) return;
+        MaxHealth = maxHealth;
+        MaxMana = maxMana;
+        CurrentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        CurrentMana = Mathf.Clamp(currentMana, 0, maxMana);
 
-        int finalDamage = Mathf.Max(damageAmount - stats.baseDefense, 0);
-        currentHealth = Mathf.Max(currentHealth - finalDamage, 0);
-
-        OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
-
-        if (currentHealth <= 0)
-        {
-            OnDied?.Invoke();
-        }
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+        OnManaChanged?.Invoke(CurrentMana, MaxMana);
     }
 
-    public bool TryConsumeMana(int amount)
+    public void TakeDamage(int amount)
     {
-        if (currentMana >= amount)
-        {
-            currentMana -= amount;
-            OnManaChanged?.Invoke(currentMana, stats.maxMana);
-            return true;
-        }
+        if (IsDead || amount <= 0) return;
 
-        Debug.Log("not enough mana");
-        return false;
+        CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+
+        if (IsDead) OnDeath?.Invoke();
+    }
+
+    // returns how much was actually healed, dead characters cannot be healed
+    public int Heal(int amount)
+    {
+        if (IsDead || amount <= 0) return 0;
+
+        int before = CurrentHealth;
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+
+        return CurrentHealth - before;
+    }
+
+    public bool UseMana(int amount)
+    {
+        if (CurrentMana < amount) return false;
+
+        CurrentMana -= amount;
+        OnManaChanged?.Invoke(CurrentMana, MaxMana);
+        return true;
+    }
+
+    public void RestoreMana(int amount)
+    {
+        if (amount <= 0) return;
+
+        CurrentMana = Mathf.Min(CurrentMana + amount, MaxMana);
+        OnManaChanged?.Invoke(CurrentMana, MaxMana);
     }
 }
