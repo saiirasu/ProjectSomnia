@@ -20,6 +20,9 @@ public static class RunState
     // set by the node map before loading the combat scene
     public static EncounterData CurrentEncounter { get; set; }
 
+    // map of this run, generated once by the map scene and kept between scene loads
+    public static MapData Map { get; set; }
+
     // static data survives between play sessions when domain reload is disabled in the editor
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetOnPlay()
@@ -41,6 +44,7 @@ public static class RunState
         }
 
         CurrentEncounter = null;
+        Map = null;
         FightsWon = 0;
         IsRunActive = true;
     }
@@ -50,6 +54,7 @@ public static class RunState
         _party.Clear();
         _unitStates.Clear();
         CurrentEncounter = null;
+        Map = null;
         FightsWon = 0;
         IsRunActive = false;
     }

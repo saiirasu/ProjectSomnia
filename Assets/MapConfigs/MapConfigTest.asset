@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478b5bb5ceb69364cb6edd6692de86e4, type: 3}
+  m_Name: MapConfigTest
+  m_EditorClassIdentifier: Assembly-CSharp::MapConfig
+  _floorCount: 12
+  _columnCount: 7
+  _pathCount: 6
+  _treasureFloor: 6
+  _minEliteRestFloor: 4
+  _fightWeight: 55
+  _eliteWeight: 16
+  _restWeight: 14
+  _treasureWeight: 5
+  _easyFightPool: {fileID: 0}
+  _hardFightPool: {fileID: 0}
+  _hardFightsFromFloor: 3
+  _elitePool: {fileID: 0}
+  _bossPool: {fileID: 0}
+  _restHealPercent: 0.3
+  _restManaPercent: 0.5
+  _treasureCurrencyMin: 20
+  _treasureCurrencyMax: 40
+  _treasureShards: 1
